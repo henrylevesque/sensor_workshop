@@ -11,10 +11,10 @@
 - Software
   - Required
     - [Raspberry Pi Imager](https://www.raspberrypi.com/software/)
-    - [BitVise SSH Client](https://bitvise.com/ssh-client-download)
-    - [Raspberry Pi Connect](https://connect.raspberrypi.com/sign-in)
     - [Microsoft Excel](https://www.microsoft.com/en-us/microsoft-365/excel)
   - Optional
+    - [BitVise SSH Client](https://bitvise.com/ssh-client-download) or other SSH client
+    - [Raspberry Pi Connect](https://connect.raspberrypi.com/sign-in)
     - [Microsoft Visual Studio Code](https://code.visualstudio.com/download)
     - [ArcGIS](https://ucincinnati.maps.arcgis.com/home/index.html)
     - [QGIS](https://qgis.org/download/)

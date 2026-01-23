@@ -1,0 +1,37 @@
+# Working directories
+/working
+
+# Virtual environments
+venv/
+env/
+.venv/
+venv*/
+
+# Environment variables and secrets
+.env
+.env.*
+env.local
+local_settings.py
+settings_local.py
+secrets.json
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Databases
+*.sqlite3
+*.db
+
+# Compiled files
+*.pyc
+
+# Temporary files
+~$*
