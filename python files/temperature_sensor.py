@@ -14,18 +14,19 @@ except Exception:
 
 # Wiring the Hardware
 # Connect DHT11 temperature sensor to Raspberry Pi GPIO pins as follows:
-# VDC → 5V VDC (Pin 2)
-# GND → GND (Pin 6)
-# VCC → VCC (Pin 4)
+# S → VCC (Pin 4)
+# V → 5V VDC (Pin 2)
+# G → GND (Pin 6)
+
 
 # Sensor type and GPIO pin
 SENSOR = Adafruit_DHT.DHT11
 PIN = 4
 
-# Function to read temperature data
+# Function to read temperatureyusing pip3 install Adafruit-DHT data
 def read_temperature():
     if Adafruit_DHT is None:
-        raise RuntimeError("Adafruit_DHT library not available. Install Adafruit-DHT and run on a Raspberry Pi.")
+        raise RuntimeError("Adafruit_DHT library not available. Install Adafruit-DHT using pip3 install Adafruit-DHT")
 
     humidity, temperature = Adafruit_DHT.read_retry(SENSOR, PIN)
     return temperature
