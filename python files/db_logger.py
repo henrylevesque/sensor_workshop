@@ -20,12 +20,17 @@ from adafruit_ads1x15.analog_in import AnalogIn
 
 
 # STEP 2: Wiring the Hardware
-# Connect MAX4466 Microphone to ADS1115 ADC, then connect ADS1115 to Raspberry Pi GPIO pins as follows:
-# VCC → VDD → 3.3V (Pin 1)
-# GND → GND → GND (Pin 6)
-# OUT → A0 → GPIO2 / SDA (Pin 3)
-# SCL → GPIO3 / SCL (Pin 5)
-# ADDR → GND
+# MAX4466 Microphone to ADS1115 ADC to Raspberry Pi:
+# MAX4466 VCC (labeled VCC on sensor) → ADS1115 VDD
+# MAX4466 GND (labeled GND on sensor) → ADS1115 GND
+# MAX4466 OUT (labeled OUT on sensor) → ADS1115 A0
+#
+# ADS1115 ADC to Raspberry Pi:
+# ADS1115 VDD → 3.3V (Physical Pin 1)
+# ADS1115 GND → GND (Physical Pin 6)
+# ADS1115 SCL → GPIO 3 (Physical Pin 5)
+# ADS1115 SDA → GPIO 2 (Physical Pin 3)
+# ADS1115 ADDR → GND (Physical Pin 6)
 
 SAMPLE_RATE = 500          # Mic sampling rate (Hz)
 WINDOW_SIZE = 200          # Samples per dB reading

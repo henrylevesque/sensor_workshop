@@ -12,10 +12,10 @@ except Exception:
 # This code requires pandas to export to an Excel file, to install pandas, run: sudo apt install python3-pandas
 
 # Wiring the Hardware
-# Connect PIR motion sensor to Raspberry Pi GPIO pins as follows:
-# VDC → 5V VDC (Pin 2)
-# GND → GND (Pin 6)
-# VCC → VCC (Pin 23)
+# Connect PIR motion sensor to Raspberry Pi as follows:
+# PIR VCC (labeled VCC on sensor) → 5V (Physical Pin 2)
+# PIR GND (labeled GND on sensor) → GND (Physical Pin 6)
+# PIR OUT (labeled OUT or SIGNAL on sensor) → GPIO 23 (Physical Pin 16)
 
 # GPIO pin for the PIR motion sensor, change this if your sensor is connected to a different pin
 PIN = 23

@@ -2,34 +2,53 @@ import time
 import pandas as pd
 from datetime import datetime
 try:
-    import Adafruit_DHT
+    import board
+    import adafruit_dht
 except Exception:
-    Adafruit_DHT = None
+    board = None
+    adafruit_dht = None
 
 # This script reads data from a DHT11 temperature sensor connected to a Raspberry Pi, collects the data for a specified duration and interval, and exports it to an Excel file.
 # Text that follows the '#' symbol is a comment and is not executed as part of the code. It provides explanations and instructions for the user.
 
-# This code requires pandas to export to an Excel file, to install pandas, run: sudo apt install python3-pandas
-# This code requires the Adafruit DHT library, to install it, run: pip3 install Adafruit-DHT
+# INSTALLATION INSTRUCTIONS (run on Raspberry Pi):
+# Step 1: Install pandas for Excel export
+#   sudo apt install python3-pandas
+# Step 2: Install CircuitPython libraries for DHT support
+#   sudo python3 -m pip install adafruit-blinka
+#   sudo python3 -m pip install adafruit-circuitpython-dht
 
 # Wiring the Hardware
-# Connect DHT11 temperature sensor to Raspberry Pi GPIO pins as follows:
-# S → VCC (Pin 4)
-# V → 5V VDC (Pin 2)
-# G → GND (Pin 6)
+# Connect a Keyestudio DHT11 sensor to Raspberry Pi as follows:
+# Keyestudio sensor pin labels (top to bottom on typical sensor):
+#   S (Signal)  → GPIO 4 (Physical Pin 7)
+#   V (VCC)     → 3.3V (Physical Pin 1)
+#   G (GND)     → GND (Physical Pin 6)
 
+# Create the DHT11 sensor object at GPIO 4 (board.D4 in CircuitPython notation)
+try:
+    if board is not None and adafruit_dht is not None:
+        sensor = adafruit_dht.DHT11(board.D4)
+    else:
+        sensor = None
+except Exception:
+    sensor = None
 
-# Sensor type and GPIO pin
-SENSOR = Adafruit_DHT.DHT11
-PIN = 4
-
-# Function to read temperatureyusing pip3 install Adafruit-DHT data
+# Function to read temperature and humidity data
 def read_temperature():
-    if Adafruit_DHT is None:
-        raise RuntimeError("Adafruit_DHT library not available. Install Adafruit-DHT using pip3 install Adafruit-DHT")
-
-    humidity, temperature = Adafruit_DHT.read_retry(SENSOR, PIN)
-    return temperature
+    if sensor is None:
+        raise RuntimeError(
+            "DHT11 sensor not initialized. Install libraries with:\n"
+            "  sudo python3 -m pip install adafruit-blinka adafruit-circuitpython-dht"
+        )
+    
+    try:
+        temperature = sensor.temperature
+        humidity = sensor.humidity
+        return temperature, humidity
+    except RuntimeError as e:
+        print(f"Sensor read error (retry): {e}")
+        return None, None
 
 # Function to collect data for a specified duration and interval
 def collect_data(duration_minutes, interval_seconds):
@@ -39,16 +58,21 @@ def collect_data(duration_minutes, interval_seconds):
 
     while time.time() - start_time < duration_seconds:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        temperature = read_temperature()
-        data.append([timestamp, temperature])
-        print(f"Timestamp: {timestamp}, Temperature: {temperature}°C")
+        temperature, humidity = read_temperature()
+        
+        if temperature is not None and humidity is not None:
+            data.append([timestamp, temperature, humidity])
+            print(f"Timestamp: {timestamp}, Temperature: {temperature:.1f}°C, Humidity: {humidity:.1f}%")
+        else:
+            print(f"Timestamp: {timestamp}, Sensor read failed, retrying...")
+        
         time.sleep(interval_seconds)
 
     return data
 
 # Function to export data to Excel
 def export_to_excel(data, filename):
-    df = pd.DataFrame(data, columns=['Timestamp', 'Temperature'])
+    df = pd.DataFrame(data, columns=['Timestamp', 'Temperature (°C)', 'Humidity (%)'])
     df.to_excel(filename, index=False)
     print(f"Data saved to {filename}")
 
