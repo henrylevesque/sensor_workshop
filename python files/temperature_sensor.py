@@ -1,7 +1,22 @@
 import time
 import pandas as pd
 from datetime import datetime
-import Adafruit_DHT
+try:
+    import Adafruit_DHT
+except Exception:
+    Adafruit_DHT = None
+
+# This script reads data from a DHT11 temperature sensor connected to a Raspberry Pi, collects the data for a specified duration and interval, and exports it to an Excel file.
+# Text that follows the '#' symbol is a comment and is not executed as part of the code. It provides explanations and instructions for the user.
+
+# This code requires pandas to export to an Excel file, to install pandas, run: sudo apt install python3-pandas
+# This code requires the Adafruit DHT library, to install it, run: pip3 install Adafruit-DHT
+
+# Wiring the Hardware
+# Connect DHT11 temperature sensor to Raspberry Pi GPIO pins as follows:
+# VDC → 5V VDC (Pin 2)
+# GND → GND (Pin 6)
+# VCC → VCC (Pin 4)
 
 # Sensor type and GPIO pin
 SENSOR = Adafruit_DHT.DHT11
@@ -9,6 +24,9 @@ PIN = 4
 
 # Function to read temperature data
 def read_temperature():
+    if Adafruit_DHT is None:
+        raise RuntimeError("Adafruit_DHT library not available. Install Adafruit-DHT and run on a Raspberry Pi.")
+
     humidity, temperature = Adafruit_DHT.read_retry(SENSOR, PIN)
     return temperature
 

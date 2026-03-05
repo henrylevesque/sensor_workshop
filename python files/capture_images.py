@@ -2,9 +2,10 @@ import time
 from datetime import datetime
 import os
 import subprocess
+import shutil
 
 # Check if libcamera-still is available
-if subprocess.run(["which", "libcamera-still"], capture_output=True, text=True).returncode != 0:
+if shutil.which("libcamera-still") is None:
     raise EnvironmentError("libcamera-still command not found. Please ensure it is installed and configured correctly.")
 
 # Function to capture an image using libcamera

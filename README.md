@@ -1,23 +1,35 @@
 # Environmental Data Collection Workshop using Raspberry Pi Zero
 
-The goal of this reposotory is to provide directions, code, and documentation for running a workshop on using raspberry pi zero to build sensors to collect environmental data.
+Note: All scripts and examples in this repository are intended to run on a Raspberry Pi Zero 2 W with the appropriate sensors and libraries installed.
+
+The goal of this repository is to provide directions, code, and documentation for running a workshop on using Raspberry Pi Zero to build sensors to collect environmental data.
+# Environmental Data Collection Workshop using Raspberry Pi Zero
+
+The goal of this repository is to provide directions, code, and documentation for running a workshop on using Raspberry Pi Zero to build sensors to collect environmental data.
 
 ## Navigation
-For first time setup: [Directions for First Time Setup](Workshop.md)  
-For installation instructions and package setup: [Installation](INSTALL.md)  
-For information on Modules: [Sensors and Modules](Sensors.md)  
+
+For first time setup: [Directions for First Time Setup](Workshop.md)
+For installation instructions and package setup: [Installation](INSTALL.md)
+For information on Modules: [Sensors and Modules](Sensors.md)
 For 3D printable enclosures: see the collection on [Printables.com](https://www.printables.com/@HenryLevesque/collections/1649941)
 
 # Linux Commands for Raspberry Pi
 
 ## Basic Terminal Navigation
+
 - `ls` - List files in current directory
 - `cd [directory]` - Change directory
 - `mkdir [name]` - Create new directory
 - `rm [file]` - Remove file
 - `rm -r [directory]` - Remove directory and contents
+- `touch filename.txt` - Create a text file called `filename.txt` (to create a python file use `touch filename.py`)
+- `nano filename.py` - Edit a file through terminal using nano
+- `pwd` - Print working directory, useful for when using `scp` to transfer files
+- `scp` - Use to copy files to and from the RPi
 
 ### Sudo
+
 `sudo` stands for "SuperUser DO". It temporarily grants admin (root) privileges to execute commands that require elevated permissions. Always use caution with sudo commands.
 
 Here's what you need to know about sudo:
@@ -31,14 +43,15 @@ Here's what you need to know about sudo:
    - Modifying system files (`sudo nano /etc/hostname`)
    - Hardware access (`sudo raspi-config`)
 
-
 Best Practices:
+
 - Double-check sudo commands before running them
 - Only use sudo when necessary
 - Never run sudo commands from untrusted sources
 - Keep your sudo password private
 
 ## Package Management
+
 ```bash
 # Update package list
 sudo apt update
@@ -54,6 +67,7 @@ sudo apt remove [package-name]
 ```
 
 ## Common Python Package Installation
+
 ```bash
 # Install pip (Python package manager)
 sudo apt install python3-pip
@@ -66,6 +80,7 @@ sudo apt install python3-matplotlib
 ```
 
 ## Network Commands
+
 ```bash
 # Check network connectivity
 ping raspberrypi.local
@@ -81,6 +96,7 @@ iwconfig
 ```
 
 ## File Transfer Commands
+
 ```bash
 # Copy from Raspberry Pi to local machine (run on your computer)
 scp [username]@[ip-address]:/path/to/file /local/destination
@@ -90,7 +106,9 @@ scp /path/to/local/file [username]@[ip-address]:/remote/destination
 ```
 
 ## Raspberry Pi Connect Setup - if not already installed on rpi os
+
 1. On the Raspberry Pi:
+
 ```bash
 # Download the Raspberry Pi Connect script
 curl -L https://downloads.raspberrypi.com/connect_agent_v1.sh | bash
@@ -99,7 +117,9 @@ curl -L https://downloads.raspberrypi.com/connect_agent_v1.sh | bash
 ```
 
 ## Raspberry Pi Connect Setup - If using newer os versions with rpi-connect already installed
+
 1. Turn on and sign in to Raspberry Pi connect:
+
 ```bash
 # Turn on Raspberry Pi Connect
 rpi-connect on
@@ -111,6 +131,7 @@ rpi-connect signin
 ```
 
 ## Important System Commands
+
 ```bash
 # Safely reboot
 sudo reboot
@@ -126,6 +147,7 @@ df -h
 ```
 
 ## File Editing
+
 ```bash
 # Edit file with nano (beginner-friendly)
 nano [filename]
