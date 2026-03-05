@@ -1,4 +1,4 @@
- # Sensor Workshop
+# Sensor Workshop
 
 Note: All scripts and examples in this workshop are intended to run on a Raspberry Pi Zero 2 W with the appropriate sensors and libraries installed.
 
@@ -13,10 +13,11 @@ Note: All scripts and examples in this workshop are intended to run on a Raspber
 ## Software (Suggested)
 
 - Required
+
   - [Raspberry Pi Imager](https://www.raspberrypi.com/software/)
   - [Microsoft Excel](https://www.microsoft.com/en-us/microsoft-365/excel)
-
 - Optional
+
   - Terminal (already included on Mac and PC) for SSH
   - [Raspberry Pi Connect](https://connect.raspberrypi.com/sign-in)
   - [Microsoft Visual Studio Code](https://code.visualstudio.com/download)
