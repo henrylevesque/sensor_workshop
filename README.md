@@ -45,8 +45,9 @@ python3 temperature_test.py
 ```
 
 **Available test scripts**:
+
 - `python3 temperature_test.py` – DHT11 sensor
-- `python3 motion_test.py` – PIR motion sensor  
+- `python3 motion_test.py` – PIR motion sensor
 - `python3 sound_test.py` – Sound sensor with microphone
 
 ### Step 2: Understand the Data Format
@@ -71,6 +72,7 @@ nano my_temperature_logger.py
 ```
 
 Now:
+
 1. Go to the repo on GitHub: https://github.com/YourUsername/sensor_workshop
 2. Open `temperature_data_logger.py` and copy all the code
 3. Back in nano (on the Pi), right-click to paste the code
@@ -78,6 +80,7 @@ Now:
 5. Press `Ctrl + X` to exit
 
 Now run your custom file:
+
 ```bash
 python3 my_temperature_logger.py
 ```
@@ -89,6 +92,7 @@ python3 my_temperature_logger.py
 ## Getting Started
 
 Before the workshop:
+
 1. Familiarize yourself with this guide
 2. Ensure you have the required software installed on your computer
 3. Review the hardware components you'll be using
@@ -99,6 +103,7 @@ Before the workshop:
 ## Required Materials
 
 **Provided by Workshop**:
+
 - 3 Raspberry Pi Zero 2 W units (shared among groups)
 - 3 Pi Sugar batteries (optional power supply)
 - Sensors:
@@ -114,6 +119,7 @@ Before the workshop:
 - USB micro cables (for power and data transfer)
 
 **You Should Have**:
+
 - Computer (Mac, Linux, or Windows) with terminal access
 - USB SD card reader (to prepare/modify SD cards if needed)
 - Network connectivity for WiFi setup
@@ -123,14 +129,17 @@ Before the workshop:
 ## Required Software
 
 **Essential**:
+
 - [Raspberry Pi Imager](https://www.raspberrypi.com/software/) – to flash Raspberry Pi OS onto SD cards
 - [Microsoft Excel](https://www.microsoft.com/en-us/microsoft-365/excel) or [LibreOffice Calc](https://www.libreoffice.org/) – to analyze data
 
 **Recommended**:
+
 - Terminal app (macOS/Linux) or PowerShell (Windows) – for SSH connection and file transfer
 - [Microsoft Visual Studio Code](https://code.visualstudio.com/download) – for editing Python scripts remotely
 
 **Optional (for data visualization)**:
+
 - [ArcGIS Online](https://ucincinnati.maps.arcgis.com/home/index.html) – for geographic mapping
 - [QGIS](https://qgis.org/download/) – open-source GIS software
 - [Raspberry Pi Connect](https://connect.raspberrypi.com/sign-in) – for remote desktop access
@@ -157,11 +166,13 @@ Before the workshop:
 ### Step 2: Connect to Your Raspberry Pi
 
 **From Mac/Linux**:
+
 ```bash
 ssh pi@rpizero2w1.local
 ```
 
 **From Windows (PowerShell)**:
+
 ```powershell
 ssh pi@rpizero2w1
 ```
@@ -194,10 +205,12 @@ sudo apt install python3-matplotlib
 ### Raspberry Pi Pinout Reference
 
 The Raspberry Pi has 40 GPIO (General Purpose Input/Output) pins. Understand the difference between:
+
 - **GPIO number** (e.g., GPIO 4) – used in Python code
 - **Physical pin number** (e.g., Pin 7) – physical location on the board
 
 **Common pins you'll use**:
+
 - **3.3V**: Physical Pin 1
 - **5V**: Physical Pin 2
 - **GND**: Physical Pins 6, 9, 14, 20, 25, 30, 34, 39
@@ -209,20 +222,23 @@ Always refer to a [Raspberry Pi pinout diagram](https://www.raspberrypi.com/docu
 ### Temperature Sensor (DHT11 - Keyestudio)
 
 **Sensor Pin Labels** (top to bottom):
+
 - `S` (Signal/DATA)
 - `V` (VCC/Power)
 - `G` (GND/Ground)
 
 **Wiring**:
-| Sensor Pin | → | Raspberry Pi |
-|---|---|---|
-| `V` (VCC) | → | 3.3V (Physical Pin 1) |
-| `G` (GND) | → | GND (Physical Pin 6) |
+
+| Sensor Pin   | → | Raspberry Pi            |
+| ------------ | -- | ----------------------- |
+| `V` (VCC)  | → | 3.3V (Physical Pin 1)   |
+| `G` (GND)  | → | GND (Physical Pin 6)    |
 | `S` (DATA) | → | GPIO 4 (Physical Pin 7) |
 
 **Code**: `temperature_sensor.py`
 
 **Run**:
+
 ```bash
 python3 temperature_sensor.py
 ```
@@ -232,20 +248,23 @@ python3 temperature_sensor.py
 ### PIR Motion Sensor (HC-SR501)
 
 **Sensor Pin Labels**:
+
 - `VCC` (Power)
 - `OUT` (Output/Signal)
 - `GND` (Ground)
 
 **Wiring**:
-| Sensor Pin | → | Raspberry Pi |
-|---|---|---|
-| `VCC` | → | 5V (Physical Pin 2) |
-| `GND` | → | GND (Physical Pin 6) |
-| `OUT` | → | GPIO 23 (Physical Pin 16) |
+
+| Sensor Pin | → | Raspberry Pi              |
+| ---------- | -- | ------------------------- |
+| `VCC`    | → | 5V (Physical Pin 2)       |
+| `GND`    | → | GND (Physical Pin 6)      |
+| `OUT`    | → | GPIO 23 (Physical Pin 16) |
 
 **Code**: `pir_motion_sensor.py`
 
 **Run**:
+
 ```bash
 python3 pir_motion_sensor.py
 ```
@@ -259,6 +278,7 @@ python3 pir_motion_sensor.py
 **Code**: `capture_images.py`
 
 **Run**:
+
 ```bash
 python3 "python files/capture_images.py"
 ```
@@ -270,16 +290,18 @@ python3 "python files/capture_images.py"
 **ADC Module**: ADS1115 (converts analog to digital)
 
 **Wiring**:
-| Component | → | Raspberry Pi |
-|---|---|---|
-| MAX4466 VCC | → | ADS1115 VDD | → | 3.3V (Pin 1) |
-| MAX4466 GND | → | ADS1115 GND | → | GND (Pin 6) |
-| MAX4466 OUT | → | ADS1115 A0 | |
-| ADS1115 SDA | → | GPIO 2 (Pin 3) |
-| ADS1115 SCL | → | GPIO 3 (Pin 5) |
-| ADS1115 ADDR | → | GND (Pin 6) |
+
+| Component    | → | Raspberry Pi   |
+| ------------ | -- | -------------- |
+| MAX4466 VCC  | → | ADS1115 VDD    |
+| MAX4466 GND  | → | ADS1115 GND    |
+| MAX4466 OUT  | → | ADS1115 A0     |
+| ADS1115 SDA  | → | GPIO 2 (Pin 3) |
+| ADS1115 SCL  | → | GPIO 3 (Pin 5) |
+| ADS1115 ADDR | → | GND (Pin 6)    |
 
 **Enable I2C on Raspberry Pi** (required for ADC):
+
 ```bash
 sudo raspi-config
 # Navigate: Interface Options → I2C → Enable
@@ -324,6 +346,7 @@ All sensor scripts now **append data directly to Excel files** as readings are c
 ### Example Usage
 
 **Temperature sensor for 10 minutes, reading every 30 seconds**:
+
 ```bash
 # Edit the script
 nano temperature_sensor.py
@@ -337,6 +360,7 @@ python3 temperature_sensor.py
 ```
 
 **Monitoring**:
+
 - Watch readings print to the terminal as they're collected
 - When complete, an Excel file is created with all data + timestamps
 - Download the file to your computer using `scp` (see [File Transfer](#file-transfer-scp))
@@ -349,30 +373,33 @@ python3 temperature_sensor.py
 
 This repository contains **test scripts** (for quick demos) and **data logger scripts** (for actual data collection):
 
-| Category | File | Sensor | Use |
-|---|---|---|---|
-| **Test** | `temperature_test.py` | DHT11 | Verify sensor works (prints to terminal) |
-| **Test** | `motion_test.py` | PIR motion | Verify sensor works (prints to terminal) |
-| **Test** | `sound_test.py` | MAX4466 + ADS1115 | Verify sensor works (prints to terminal) |
-| **Data Logger** | `temperature_data_logger.py` | DHT11 | Collect data to Excel (append mode) |
-| **Data Logger** | `motion_data_logger.py` | PIR motion | Collect data to Excel (append mode) |
-| **Data Logger** | `sound_data_logger.py` | MAX4466 mic | Collect data to Excel (append mode) |
-| **Camera** | `capture_images.py` | Pi Camera | Take photos to folder |
-| **Template** | `*_TEMPLATE.py` files | Various | Examples for other sensors |
+| Category              | File                           | Sensor            | Use                                      |
+| --------------------- | ------------------------------ | ----------------- | ---------------------------------------- |
+| **Test**        | `temperature_test.py`        | DHT11             | Verify sensor works (prints to terminal) |
+| **Test**        | `motion_test.py`             | PIR motion        | Verify sensor works (prints to terminal) |
+| **Test**        | `sound_test.py`              | MAX4466 + ADS1115 | Verify sensor works (prints to terminal) |
+| **Data Logger** | `temperature_data_logger.py` | DHT11             | Collect data to Excel (append mode)      |
+| **Data Logger** | `motion_data_logger.py`      | PIR motion        | Collect data to Excel (append mode)      |
+| **Data Logger** | `sound_data_logger.py`       | MAX4466 mic       | Collect data to Excel (append mode)      |
+| **Camera**      | `capture_images.py`          | Pi Camera         | Take photos to folder                    |
+| **Template**    | `*_TEMPLATE.py` files        | Various           | Examples for other sensors               |
 
 ### Recommended Student Workflow
 
 **Step 1: Test the sensor works**
+
 ```bash
 python3 temperature_test.py
 # Watch output for 30 seconds, press Ctrl+C
 ```
 
 **Step 2: Use demo script to understand output format**
+
 - See what kind of data your sensor produces
 - Understand the timing and format
 
 **Step 3: Run data collection with your own params**
+
 ```bash
 # Edit the data logger file to set duration
 nano temperature_data_logger.py
@@ -390,6 +417,7 @@ python3 temperature_data_logger.py
 Students can write their own scripts using the provided files as templates. Here's the easiest workflow:
 
 #### Method 1: Copy and Modify Existing File
+
 ```bash
 # Copy the temperature data logger as a starting point
 cp temperature_data_logger.py my_custom_sensor.py
@@ -399,6 +427,7 @@ nano my_custom_sensor.py
 ```
 
 #### Method 2: Create and Edit a New File
+
 ```bash
 # Create an empty Python file
 touch my_sensor.py
@@ -408,12 +437,14 @@ nano my_sensor.py
 ```
 
 **In nano editor**:
+
 1. You can copy/paste code from any source (this repo or your own code)
 2. Edit as needed
 3. Save: Press `Ctrl + O`, then `Enter`
 4. Exit: Press `Ctrl + X`
 
 **Tips for using nano**:
+
 - Right-click to paste (if using terminal on Windows/Mac)
 - Use arrow keys to move around
 - `Ctrl + A` = beginning of line
@@ -434,6 +465,7 @@ nano my_temp_logger.py
 ```
 
 Then paste:
+
 ```python
 import time
 from datetime import datetime
@@ -476,10 +508,11 @@ Then save and exit nano.
 If you want to use sensors **not covered by the main scripts**, template files are provided:
 
 - `light_test_TEMPLATE.py` – Light sensor template
-- `soil_moisture_test_TEMPLATE.py` – Soil moisture sensor template  
+- `soil_moisture_test_TEMPLATE.py` – Soil moisture sensor template
 - `distance_test_TEMPLATE.py` – Ultrasonic distance sensor template
 
 **To use a template**:
+
 1. Copy it to a real file: `cp light_test_TEMPLATE.py light_test.py`
 2. Edit it: `nano light_test.py`
 3. Customize the GPIO pins and sensor parameters
@@ -585,11 +618,13 @@ ping [hostname.local]
 `sudo` = "SuperUser DO" – runs commands with administrator privileges (use with caution!)
 
 **When to use sudo**:
+
 - Installing software (`sudo apt install`)
 - Modifying system files (`sudo nano /etc/hostname`)
 - Hardware configuration (`sudo raspi-config`)
 
 **Best practices**:
+
 - Only use when necessary
 - Double-check the command before pressing Enter
 - Never run sudo commands from untrusted sources
@@ -603,37 +638,38 @@ ping [hostname.local]
 If your Raspberry Pi needs to connect to a different WiFi network:
 
 1. Open the WiFi configuration file:
+
    ```bash
    sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
    ```
-
 2. Find the `network={` sections and add your network:
+
    ```
    network={
        ssid="YourNetworkName"
        psk="YourNetworkPassword"
        priority=1
    }
-   
+
    network={
        ssid="BackupNetwork"
        psk="BackupPassword"
        priority=2
    }
    ```
-
 3. Save: Press `Ctrl + O`, then `Enter`
 4. Exit: Press `Ctrl + X`
-
 5. Restart WiFi connection:
+
    ```bash
    sudo systemctl restart dhcpcd
-   
+
    # Wait 10-15 seconds, then check
    hostname -I
    ```
 
 **Notes**:
+
 - Higher `priority` number = connects first
 - For open networks (no password): use `key_mgmt=NONE` instead of `psk`
 - Network name is case-sensitive
@@ -654,11 +690,13 @@ Transfer data files and scripts between your computer and the Raspberry Pi.
 ### Download Data FROM Raspberry Pi
 
 **Mac/Linux**:
+
 ```bash
 scp pi@rpizero2w1.local:/home/pi/temperature_data.xlsx ~/Desktop/
 ```
 
 **Windows (PowerShell)**:
+
 ```powershell
 scp pi@rpizero2w1:/home/pi/temperature_data.xlsx C:\Users\YourUsername\Desktop\
 ```
@@ -666,23 +704,25 @@ scp pi@rpizero2w1:/home/pi/temperature_data.xlsx C:\Users\YourUsername\Desktop\
 ### Upload Script TO Raspberry Pi
 
 **Mac/Linux**:
+
 ```bash
 scp ~/Desktop/my_script.py pi@rpizero2w1.local:/home/pi/
 ```
 
 **Windows (PowerShell)**:
+
 ```powershell
 scp C:\Users\YourUsername\Desktop\my_script.py pi@rpizero2w1:/home/pi/
 ```
 
 ### Common Examples
 
-| Action | Mac/Linux | Windows |
-|---|---|---|
-| Download temp data | `scp pi@rpizero2w1.local:/home/pi/temperature_data.xlsx ~/Desktop/` | `scp pi@rpizero2w1:/home/pi/temperature_data.xlsx C:\Users\YourUsername\Desktop\` |
-| Download motion data | `scp pi@rpizero2w1.local:/home/pi/motion_data.xlsx ~/Downloads/` | `scp pi@rpizero2w1:/home/pi/motion_data.xlsx C:\Users\YourUsername\Downloads\` |
-| Upload edited script | `scp ~/my_script.py pi@rpizero2w1.local:/home/pi/` | `scp C:\Users\YourUsername\my_script.py pi@rpizero2w1:/home/pi/` |
-| Download all images | `scp -r pi@rpizero2w1.local:/home/pi/captured_images/ ~/Desktop/` | `scp -r pi@rpizero2w1:/home/pi/captured_images/ C:\Users\YourUsername\Desktop\` |
+| Action               | Mac/Linux                                                             | Windows                                                                             |
+| -------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Download temp data   | `scp pi@rpizero2w1.local:/home/pi/temperature_data.xlsx ~/Desktop/` | `scp pi@rpizero2w1:/home/pi/temperature_data.xlsx C:\Users\YourUsername\Desktop\` |
+| Download motion data | `scp pi@rpizero2w1.local:/home/pi/motion_data.xlsx ~/Downloads/`    | `scp pi@rpizero2w1:/home/pi/motion_data.xlsx C:\Users\YourUsername\Downloads\`    |
+| Upload edited script | `scp ~/my_script.py pi@rpizero2w1.local:/home/pi/`                  | `scp C:\Users\YourUsername\my_script.py pi@rpizero2w1:/home/pi/`                  |
+| Download all images  | `scp -r pi@rpizero2w1.local:/home/pi/captured_images/ ~/Desktop/`   | `scp -r pi@rpizero2w1:/home/pi/captured_images/ C:\Users\YourUsername\Desktop\`   |
 
 ### Notes
 
@@ -701,18 +741,20 @@ scp C:\Users\YourUsername\Desktop\my_script.py pi@rpizero2w1:/home/pi/
 **Problem**: `ssh: Could not resolve hostname rpizero2w1.local`
 
 **Solutions**:
+
 1. Check if Raspberry Pi is on and connected to WiFi
+
    ```bash
    # On the Pi
    hostname -I
    ```
-
 2. Try using IP address directly:
+
    ```bash
    ssh pi@192.168.1.100
    ```
-
 3. Try `rpizero2w1` without `.local` on Windows:
+
    ```powershell
    ssh pi@rpizero2w1
    ```
@@ -722,6 +764,7 @@ scp C:\Users\YourUsername\Desktop\my_script.py pi@rpizero2w1:/home/pi/
 **Problem**: `ModuleNotFoundError: No module named 'adafruit_dht'`
 
 **Solution**:
+
 ```bash
 sudo apt update
 sudo python3 -m pip install --break-system-packages adafruit-blinka
@@ -731,6 +774,7 @@ sudo python3 -m pip install --break-system-packages adafruit-circuitpython-dht
 ### Sensor Returns None or No Data
 
 **Possible causes**:
+
 1. **Wiring issue**: Double-check all connections match the wiring diagram
 2. **Sensor dead/damaged**: Try another sensor of the same model
 3. **Power issue**: Check if 3.3V and GND are properly connected
@@ -741,18 +785,21 @@ sudo python3 -m pip install --break-system-packages adafruit-circuitpython-dht
 **Problem**: Script runs but no `.xlsx` file appears
 
 **Solution**:
+
 1. Check current directory:
+
    ```bash
    ls -la
    ```
-   Files should appear in the same folder as the script
 
+   Files should appear in the same folder as the script
 2. Verify pandas is installed:
+
    ```bash
    python3 -c "import pandas; print('OK')"
    ```
-
 3. Check for permission errors:
+
    ```bash
    chmod 755 temperature_sensor.py
    ```
@@ -762,12 +809,14 @@ sudo python3 -m pip install --break-system-packages adafruit-circuitpython-dht
 **Problem**: Raspberry Pi keeps losing WiFi connection
 
 **Solution**:
+
 1. Edit config to prioritize speed:
+
    ```bash
    sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
    ```
-
 2. Add to your network block:
+
    ```
    network={
        ssid="YourNetwork"
@@ -776,8 +825,8 @@ sudo python3 -m pip install --break-system-packages adafruit-circuitpython-dht
        scan_ssid=1
    }
    ```
-
 3. Restart:
+
    ```bash
    sudo systemctl restart dhcpcd
    ```
@@ -787,12 +836,13 @@ sudo python3 -m pip install --break-system-packages adafruit-circuitpython-dht
 **Problem**: Pi Sugar battery dies during long data collection
 
 **Solutions**:
+
 1. Use screen blanking to save power:
+
    ```bash
    # Disable HDMI
    tvservice -o
    ```
-
 2. Collect data in shorter bursts (modify duration_minutes in script)
 3. Transfer data frequently to backup
 
@@ -852,6 +902,7 @@ sudo python3 -m pip install --break-system-packages adafruit-circuitpython-dht
 ### Choose Your Phenomena
 
 **Good choices** (measurable in 1 week):
+
 - Temperature changes over time
 - Motion patterns in a room
 - Light levels at different times of day
@@ -859,6 +910,7 @@ sudo python3 -m pip install --break-system-packages adafruit-circuitpython-dht
 - Sound levels in a location
 
 **Not recommended**:
+
 - Weather (need professional equipment)
 - Pollution levels (need certified sensors)
 - Seismic activity (need expensive sensors)
@@ -874,6 +926,7 @@ sudo python3 -m pip install --break-system-packages adafruit-circuitpython-dht
 ### Data Collection Plan
 
 **Before you start**, document:
+
 - **Location**: Specific address or GPS coordinates
 - **Duration**: How long you'll collect data
 - **Interval**: How often you'll take readings
@@ -885,15 +938,16 @@ sudo python3 -m pip install --break-system-packages adafruit-circuitpython-dht
 If your battery might die before collection ends:
 
 1. **Export data periodically**:
+
    - Every hour, download the Excel file via `scp`
    - Keep copies on your computer
-
 2. **Use the append feature**:
+
    - Scripts are updated to append new data to existing files
    - If the Pi restarts, data continues in the same file
    - No data loss if battery dies mid-collection
-
 3. **Backup important data**:
+
    ```bash
    # Download files before battery dies
    scp pi@rpizero2w1:/home/pi/*.xlsx ~/Backup/
@@ -952,16 +1006,16 @@ The Keyestudio sensor kit includes:
 
 ## Quick Reference Cheat Sheet
 
-| Task | Command |
-|---|---|
-| Connect via SSH | `ssh pi@rpizero2w1.local` (Mac) or `ssh pi@rpizero2w1` (Windows) |
-| Edit WiFi | `sudo nano /etc/wpa_supplicant/wpa_supplicant.conf` |
-| Install libraries | `sudo python3 -m pip install --break-system-packages [package]` |
-| Run sensor script | `python3 temperature_sensor.py` |
-| Download data | `scp pi@rpizero2w1.local:/home/pi/*.xlsx ~/Desktop/` (Mac) |
-| Check IP | `hostname -I` |
-| Safely shutdown | `sudo shutdown -h now` |
-| Check temperatures | `vcgencmd measure_temp` |
+| Task               | Command                                                              |
+| ------------------ | -------------------------------------------------------------------- |
+| Connect via SSH    | `ssh pi@rpizero2w1.local` (Mac) or `ssh pi@rpizero2w1` (Windows) |
+| Edit WiFi          | `sudo nano /etc/wpa_supplicant/wpa_supplicant.conf`                |
+| Install libraries  | `sudo python3 -m pip install --break-system-packages [package]`    |
+| Run sensor script  | `python3 temperature_sensor.py`                                    |
+| Download data      | `scp pi@rpizero2w1.local:/home/pi/*.xlsx ~/Desktop/` (Mac)         |
+| Check IP           | `hostname -I`                                                      |
+| Safely shutdown    | `sudo shutdown -h now`                                             |
+| Check temperatures | `vcgencmd measure_temp`                                            |
 
 ---
 
@@ -972,9 +1026,3 @@ The Keyestudio sensor kit includes:
 3. **Verify libraries are installed** – run install commands again
 4. **Test incrementally** – wire one sensor, test it, then add the next
 5. **Ask the instructor** – we're here to help!
-
----
-
-**Last Updated**: March 2026  
-**For**: Graduate students and workshop participants  
-**Duration**: One-week data collection projects
