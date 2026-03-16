@@ -24,6 +24,25 @@ except Exception:
 # Step 2: Install openpyxl for Excel export with append functionality
 #   sudo python3 -m pip install --break-system-packages openpyxl
 
+# IMPORTANT: Running this script with SSH
+# If you start this script and then disconnect SSH, it will STOP.
+# To keep this script running after you disconnect, use one of these methods:
+#
+# Method 1: Use nohup (recommended, simplest)
+#   cd /home/pi
+#   nohup python3 motion_data_logger.py >/home/pi/motion_log.txt 2>&1 &
+#
+# Method 2: Start then disown
+#   python3 motion_data_logger.py >/home/pi/motion_log.txt 2>&1 &
+#   jobs
+#   disown -h %1    # prevents SIGHUP for job %1
+#
+# Both methods:
+# - Redirect output to a file (>/path/to/log.txt) to keep from blocking
+# - Allow you to safely disconnect SSH while the script runs
+# - Can be stopped with: pkill -f motion_data_logger.py
+# - Data is appended to the Excel file throughout the run
+
 # Wiring the Hardware
 # Connect PIR motion sensor to Raspberry Pi as follows:
 # PIR VCC (labeled VCC on sensor) → 5V (Physical Pin 2)

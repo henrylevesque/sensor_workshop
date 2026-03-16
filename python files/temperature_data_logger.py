@@ -27,6 +27,25 @@ except Exception:
 #   sudo python3 -m pip install --break-system-packages adafruit-blinka
 #   sudo python3 -m pip install --break-system-packages adafruit-circuitpython-dht
 
+# IMPORTANT: Running this script with SSH
+# If you start this script and then disconnect SSH, it will STOP.
+# To keep this script running after you disconnect, use one of these methods:
+#
+# Method 1: Use nohup (recommended, simplest)
+#   cd /home/pi
+#   nohup python3 temperature_data_logger.py >/home/pi/temp_log.txt 2>&1 &
+#
+# Method 2: Start then disown
+#   python3 temperature_data_logger.py >/home/pi/temp_log.txt 2>&1 &
+#   jobs
+#   disown -h %1    # prevents SIGHUP for job %1
+#
+# Both methods:
+# - Redirect output to a file (>/path/to/log.txt) to keep from blocking
+# - Allow you to safely disconnect SSH while the script runs
+# - Can be stopped with: pkill -f temperature_data_logger.py
+# - Data is appended to the Excel file throughout the run
+
 # Wiring the Hardware
 # Connect a Keyestudio DHT11 sensor to Raspberry Pi as follows:
 # Keyestudio sensor pin labels (top to bottom on typical sensor):

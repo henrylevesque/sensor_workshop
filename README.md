@@ -734,6 +734,62 @@ scp C:\Users\YourUsername\Desktop\my_script.py pi@rpizero2w1:/home/pi/
 
 ---
 
+## Running Data Loggers Persistently (Without SSH attached)
+
+By default, if you SSH into the Pi, start a data logger script, and then disconnect SSH, the script will stop. To keep a logger running after you disconnect:
+
+### Quick Method: Use `nohup` and background the process
+
+Start the logger in the background with output redirected to a file:
+
+```bash
+cd /home/pi
+nohup python3 temperature_data_logger.py >/home/pi/temp_log.txt 2>&1 &
+```
+
+Notes:
+- `nohup` makes the process ignore disconnect signals (SIGHUP)
+- Output is written to `/home/pi/temp_log.txt` (change filename as needed)
+- The logger data (Excel file) is written to the path specified in the script
+- You can safely disconnect SSH; the script continues running
+
+### Alternative: Start then `disown` the process
+
+If you already started the script directly:
+
+```bash
+python3 temperature_data_logger.py >/home/pi/temp_log.txt 2>&1 &
+jobs
+disown -h %1    # prevents SIGHUP for job %1
+# now disconnect SSH
+```
+
+### Monitor or stop the running logger
+
+```bash
+# Check if it's still running
+pgrep -a -f temperature_data_logger.py
+
+# View the log output
+tail -f /home/pi/temp_log.txt
+
+# Stop the logger (keyboard interrupt won't work after disconnect)
+pkill -f temperature_data_logger.py
+```
+
+### Reconnect and copy results
+
+```bash
+# SSH back in
+ssh pi@rpizero2w3
+
+# Copy the Excel file to your Windows machine
+# (run from PowerShell on Windows)
+scp pi@rpizero2w3:/home/pi/temperature_data.xlsx C:\Users\leves\Downloads\
+```
+
+---
+
 ## Troubleshooting
 
 ### Camera not detected (Arducam / IMX219)
