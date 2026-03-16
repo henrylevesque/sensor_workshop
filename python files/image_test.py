@@ -9,51 +9,73 @@ import shutil
 # Camera support: Raspberry Pi Camera Module or compatible CSI camera
 # Requires libcamera to be installed on the system
 
+
+def get_camera_command():
+    """Return available still-image camera command for this OS."""
+    for cmd in ("rpicam-still", "libcamera-still"):
+        if shutil.which(cmd) is not None:
+            return cmd
+
+    raise RuntimeError(
+        "No camera capture command found. Install one of:\n"
+        "  sudo apt update\n"
+        "  sudo apt install -y rpicam-apps   # Raspberry Pi OS Bookworm/newer\n"
+        "  sudo apt install -y libcamera-apps # Raspberry Pi OS Bullseye/older"
+    )
+
 def test_camera():
     """Test if camera is working by capturing a test image"""
-    if shutil.which("libcamera-still") is None:
-        raise RuntimeError(
-            "libcamera-still command not found. Install with:\n"
-            "  sudo apt update\n"
-            "  sudo apt install -y camera-stack libcamera-apps"
-        )
+    camera_cmd = get_camera_command()
     
     try:
         # Capture a test image to /dev/null (doesn't save it)
         subprocess.run(
-            ["libcamera-still", "-o", "/dev/null", "--width", "1920", "--height", "1080", "-n"],
+            [camera_cmd, "-o", "/dev/null", "--width", "1920", "--height", "1080", "-n"],
             check=True,
             capture_output=True,
             timeout=10
         )
-        return True
+        return True, None
     except subprocess.CalledProcessError as e:
-        return False
+        stderr_text = (e.stderr or b"").decode("utf-8", errors="replace").strip()
+        stdout_text = (e.stdout or b"").decode("utf-8", errors="replace").strip()
+        details = stderr_text or stdout_text or str(e)
+        return False, details
     except subprocess.TimeoutExpired:
-        return False
+        return False, "Camera capture timed out after 10 seconds"
 
 if __name__ == "__main__":
     print("=" * 70)
     print("CAMERA SENSOR TEST")
     print("=" * 70)
+    print(f"Using camera command: {get_camera_command()}")
     print("Testing camera connection every 2 seconds...")
     print("Press Ctrl+C to stop.\n")
     
     test_count = 0
     success_count = 0
+    last_error = None
     
     try:
         while True:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             test_count += 1
             
-            is_working = test_camera()
+            is_working, error_details = test_camera()
             
             if is_working:
                 success_count += 1
-                print(f"[{test_count}] {timestamp} | Camera: OK")
+                if last_error is not None:
+                    print(f"[{test_count}] {timestamp} | Camera: OK (recovered)")
+                else:
+                    print(f"[{test_count}] {timestamp} | Camera: OK")
+                last_error = None
             else:
                 print(f"[{test_count}] {timestamp} | Camera: FAILED - Could not capture test image")
+                if last_error is None:
+                    # print detailed diagnostics only once
+                    print(f"    Details: {error_details}")
+                    last_error = error_details
             
             time.sleep(2)
     

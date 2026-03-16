@@ -12,37 +12,49 @@ import shutil
 # INSTALLATION INSTRUCTIONS (run on Raspberry Pi):
 # Step 1: Update system packages
 #   sudo apt update
-# Step 2: Install libcamera and camera apps
-#   sudo apt install -y camera-stack libcamera-apps
+# Step 2: Install camera apps (choose one based on your OS)
+#   sudo apt install -y rpicam-apps    # Raspberry Pi OS Bookworm/newer
+#   sudo apt install -y libcamera-apps # Raspberry Pi OS Bullseye/older
 
 # Camera support: Raspberry Pi Camera Module or compatible CSI camera
 # Images are stored as JPEG files with timestamps as filenames
 
-# Check if libcamera-still is available
-if shutil.which("libcamera-still") is None:
+def get_camera_command():
+    """Return available still-image camera command for this OS."""
+    for cmd in ("rpicam-still", "libcamera-still"):
+        if shutil.which(cmd) is not None:
+            return cmd
+
     raise EnvironmentError(
-        "libcamera-still command not found. Install with:\n"
+        "No camera capture command found. Install one of:\n"
         "  sudo apt update\n"
-        "  sudo apt install -y camera-stack libcamera-apps"
+        "  sudo apt install -y rpicam-apps   # Raspberry Pi OS Bookworm/newer\n"
+        "  sudo apt install -y libcamera-apps # Raspberry Pi OS Bullseye/older"
     )
+
+
+CAMERA_CMD = get_camera_command()
 
 # Function to capture an image using libcamera
 def capture_image(image_path):
     """Capture a single image and save it to the specified path"""
     try:
         subprocess.run(
-            ["libcamera-still", "-o", image_path, "--width", "1920", "--height", "1080", "-n"],
+            [CAMERA_CMD, "-o", image_path, "--width", "1920", "--height", "1080", "-n"],
             check=True,
             capture_output=True,
             timeout=30
         )
-        return True
+        return True, None
     except subprocess.CalledProcessError as e:
-        print(f"Error capturing image: {e}")
-        return False
+        stderr_text = (e.stderr or b"").decode("utf-8", errors="replace").strip()
+        stdout_text = (e.stdout or b"").decode("utf-8", errors="replace").strip()
+        details = stderr_text or stdout_text or str(e)
+        print(f"Error capturing image: {details}")
+        return False, details
     except subprocess.TimeoutExpired:
         print("Image capture timed out")
-        return False
+        return False, "Image capture timed out"
 
 # Function to collect images for a specified duration and interval
 def collect_images(duration_minutes, interval_seconds, folder_path="captured_images"):
@@ -62,10 +74,12 @@ def collect_images(duration_minutes, interval_seconds, folder_path="captured_ima
     # Create the folder if it doesn't exist
     os.makedirs(folder_path, exist_ok=True)
     
+    print(f"Using camera command: {CAMERA_CMD}")
     print(f"Starting image capture for {duration_minutes} minutes (capturing every {interval_seconds} seconds)...")
     print(f"Images will be saved to: {folder_path}")
     print("-" * 70)
 
+    last_error = None
     try:
         while time.time() - start_time < duration_seconds:
             # Get current timestamp for the filename
@@ -76,11 +90,19 @@ def collect_images(duration_minutes, interval_seconds, folder_path="captured_ima
             
             # Capture image
             capture_count += 1
-            if capture_image(image_name):
+            capture_ok, error_details = capture_image(image_name)
+            if capture_ok:
                 success_count += 1
-                print(f"[{capture_count}] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | Image saved: {image_name}")
+                if last_error is not None:
+                    print(f"[{capture_count}] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | Image saved: {image_name} (recovered)")
+                else:
+                    print(f"[{capture_count}] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | Image saved: {image_name}")
+                last_error = None
             else:
                 print(f"[{capture_count}] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | Image capture failed, will retry next interval")
+                if last_error is None:
+                    print(f"    Details: {error_details}")
+                    last_error = error_details
             
             # Wait for the next interval
             remaining_time = duration_seconds - (time.time() - start_time)
