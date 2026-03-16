@@ -16,6 +16,20 @@ import shutil
 #   sudo apt install -y rpicam-apps    # Raspberry Pi OS Bookworm/newer
 #   sudo apt install -y libcamera-apps # Raspberry Pi OS Bullseye/older
 
+# NOTE ABOUT CAMERA DETECTION
+# If the Pi doesn't detect the camera, check /boot/firmware/config.txt for
+# forced overlays. Removing forced `dtoverlay=imx219` and allowing
+# auto-detection (or enabling the correct Arducam helper) resolved detection
+# in our environment. Example commands used on the Pi:
+#   sudo cp /boot/firmware/config.txt /boot/firmware/config.txt.bak
+#   sudo sed -i '/^camera_auto_detect=0/d; /^dtoverlay=imx219/d' /boot/firmware/config.txt
+#   # ensure I2C probing is enabled
+#   # (add `dtparam=i2c_arm=on` if missing)
+#   sudo reboot
+# The above commands (removing forced overlays and enabling I2C) were the
+# actions that fixed detection in our environment. No additional helper
+# scripts were required.
+
 # Camera support: Raspberry Pi Camera Module or compatible CSI camera
 # Images are stored as JPEG files with timestamps as filenames
 

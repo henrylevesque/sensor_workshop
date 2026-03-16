@@ -7,7 +7,22 @@ import shutil
 # Press Ctrl+C to stop.
 
 # Camera support: Raspberry Pi Camera Module or compatible CSI camera
-# Requires libcamera to be installed on the system
+# Requires libcamera (rpicam-apps/libcamera-apps) to be installed on the system
+#
+# NOTE: If the camera is not detected, a common cause is a forced device-tree
+# overlay in /boot/firmware/config.txt such as a manual `dtoverlay=imx219` or
+# `camera_auto_detect=0`. In a recent troubleshooting session we removed the
+# forced lines and left auto-detection enabled and the camera began working.
+#
+# Quick fix that worked on the Pi used here (run on the Pi and reboot):
+#   sudo cp /boot/firmware/config.txt /boot/firmware/config.txt.bak
+#   sudo sed -i '/^camera_auto_detect=0/d; /^dtoverlay=imx219/d' /boot/firmware/config.txt
+#   sudo reboot
+#
+# Also ensure I2C probing is enabled:
+#   # add or ensure this line exists in /boot/firmware/config.txt
+#   dtparam=i2c_arm=on
+#
 
 
 def get_camera_command():

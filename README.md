@@ -736,6 +736,41 @@ scp C:\Users\YourUsername\Desktop\my_script.py pi@rpizero2w1:/home/pi/
 
 ## Troubleshooting
 
+### Camera not detected (Arducam / IMX219)
+
+If your CSI camera is not detected but the Pi shows the camera driver as loaded
+and the kernel prints imx219 probe errors (for example: "Error reading reg
+0x0000: -121"), a forced device-tree overlay or disabled I2C probing is a
+common cause. The following quick actions resolved the issue in our testing:
+
+1. Back up and remove any forced IMX219 overlay lines from the config:
+
+```bash
+sudo cp /boot/firmware/config.txt /boot/firmware/config.txt.bak
+sudo sed -i '/^camera_auto_detect=0/d; /^dtoverlay=imx219/d' /boot/firmware/config.txt
+```
+
+2. Ensure I2C probing is enabled (add if missing):
+
+```bash
+# in /boot/firmware/config.txt ensure this line exists
+dtparam=i2c_arm=on
+```
+
+3. Reboot and re-check logs:
+
+```bash
+sudo reboot
+# after reboot
+dmesg | grep -iE 'imx219|camera|i2c|arducam'
+i2cdetect -l
+sudo i2cdetect -y 10
+```
+
+If these steps make the camera visible (`rpicam-hello --list-cameras` or
+`v4l2-ctl --list-devices` show a camera), you're good to run the image test
+and logger scripts in `python files/`.
+
 ### Cannot Connect via SSH
 
 **Problem**: `ssh: Could not resolve hostname rpizero2w1.local`
