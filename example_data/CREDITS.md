@@ -5,7 +5,7 @@ under the Pexels Free License (https://www.pexels.com/license/).
 
 ## shop_pov/
 
-- **Source:** [Time Lapse Video of a Person in the Grovery]
+- **Source:** [Time Lapse Video of a Person in the Grocery]
 - **Creator:** [Kindel Media]
 - **URL:** [https://www.pexels.com/video/time-lapse-video-of-a-person-in-the-grocery-9010436/]
 - **License:** Pexels Free to use License
