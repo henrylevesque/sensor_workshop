@@ -633,47 +633,123 @@ ping [hostname.local]
 
 ## WiFi Configuration
 
-### Connect to a Different Network
+### Connect to a Different Network (headless-first, then fallbacks)
 
-If your Raspberry Pi needs to connect to a different WiFi network:
+This recipe assumes the Pi was flashed with WiFi set in the imager and is currently reachable headless over that initial 2.4 GHz hotspot. Students should connect their laptop to the same 2.4 GHz hotspot (the one used during imaging) to SSH in, then add their home hotspot credentials.
 
-1. Open the WiFi configuration file:
+Most-likely-to-work (do these first)
 
-   ```bash
-   sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
-   ```
-2. Find the `network={` sections and add your network:
+1. SSH into the Pi from your laptop (make sure the laptop is on the same 2.4 GHz hotspot used during imaging):
 
-   ```
-   network={
-       ssid="YourNetworkName"
-       psk="YourNetworkPassword"
-       priority=1
-   }
+```bash
+ssh pi@rpizero2w1.local
+# or use the Pi's IP address shown by the imager
+```
 
-   network={
-       ssid="BackupNetwork"
-       psk="BackupPassword"
-       priority=2
-   }
-   ```
-3. Save: Press `Ctrl + O`, then `Enter`
-4. Exit: Press `Ctrl + X`
-5. Restart WiFi connection:
+2. Edit the system `wpa_supplicant` file and add your home network. The Pi Zero 2 W only supports 2.4 GHz, so use a 2.4 GHz SSID.
 
-   ```bash
-   sudo systemctl restart dhcpcd
+```bash
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+```
 
-   # Wait 10-15 seconds, then check
-   hostname -I
-   ```
+Make sure the file contains this header and your network block (set `country=`):
 
-**Notes**:
+```conf
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=US
 
-- Higher `priority` number = connects first
-- For open networks (no password): use `key_mgmt=NONE` instead of `psk`
-- Network name is case-sensitive
-- Changes apply immediately after restarting dhcpcd
+network={
+    ssid="YourHomeSSID"
+    psk="YourHomePassword"
+    priority=1
+    scan_ssid=1
+}
+```
+
+*Note on `priority`: Only matters if multiple networks are in this file. Higher numbers connect first. If you add a second network, use `priority=2` or higher for it to de-prioritize.*
+
+*Note on `scan_ssid=1`: Include this if your network is hidden OR if you have a weak signal or problematic router; it increases robustness.*
+
+Save (Ctrl+O, Enter) and exit (Ctrl+X).
+
+3. Apply the new settings (this reloads wpa_supplicant without reboot):
+
+```bash
+sudo wpa_cli -i wlan0 reconfigure
+# Wait ~10 seconds then check IP
+hostname -I || ip addr show wlan0
+```
+
+4. **Verify the connection worked**:
+   - If `hostname -I` shows a different IP address (not on the imaging hotspot's range), the Pi is now connected to your home network.
+   - Disconnect your laptop from the imaging hotspot and connect to your home network.
+   - SSH to the Pi using its new IP or mDNS name (usually `rpizero2w1.local`):
+   
+```bash
+ssh pi@rpizero2w1.local
+# or use the IP shown by hostname -I
+```
+
+If the Pi connects successfully, you're done. If it shows no IP or the old IP, continue to the troubleshooting section below.
+
+Important headless notes
+- The initial hotspot created during imaging is only used to SSH in to the Pi once. After you add your home network to `/etc/wpa_supplicant/wpa_supplicant.conf` and reload, the Pi will attempt to join the added networks automatically.
+- The Pi Zero 2 W does not support 5 GHz — ensure your home SSID is broadcasting on 2.4 GHz or that the router has a combined SSID that includes 2.4 GHz.
+
+If the simple reload didn't work (fallbacks and diagnostics)
+
+5. Quick file checks and fixes (run these once):
+
+```bash
+# Remove Windows CRLF line endings if file was edited on Windows
+sudo sed -i 's/\r$//' /etc/wpa_supplicant/wpa_supplicant.conf
+
+# Ensure correct owner & restrictive permissions
+sudo chown root:root /etc/wpa_supplicant/wpa_supplicant.conf
+sudo chmod 600 /etc/wpa_supplicant/wpa_supplicant.conf
+```
+
+6. Try restarting services (try both wpa_supplicant forms since some installs use the per-interface unit):
+
+```bash
+sudo systemctl restart wpa_supplicant || sudo systemctl restart wpa_supplicant@wlan0
+sudo systemctl restart dhcpcd || echo "dhcpcd may not be installed on this image"
+```
+
+7. If `dhcpcd` restart reports "Unit not found" or you still have no IP, check which network manager is active and view logs:
+
+```bash
+systemctl is-active NetworkManager || systemctl is-active systemd-networkd || echo "No NetworkManager/systemd-networkd active"
+which dhcpcd || dpkg -l | grep dhcpcd
+sudo journalctl -u wpa_supplicant --no-pager -n 200
+sudo journalctl -u dhcpcd --no-pager -n 200
+ps aux | grep -E 'dhcpcd|wpa_supplicant|NetworkManager|systemd-networkd'
+```
+
+8. Alternatives and useful commands
+- Use `wpa_passphrase` to append a hashed PSK (avoids storing plain text):
+
+```bash
+wpa_passphrase "YourHomeSSID" "YourHomePassword" | sudo tee -a /etc/wpa_supplicant/wpa_supplicant.conf
+```
+
+- If the system uses NetworkManager (uncommon on Raspberry Pi OS Lite), connect using `nmcli` from the Pi:
+
+```bash
+nmcli device wifi connect "YourHomeSSID" password "YourHomePassword"
+```
+
+What to collect and paste here if it still fails
+
+```bash
+sudo systemctl status dhcpcd --no-pager
+sudo journalctl -u dhcpcd --no-pager -n 200
+sudo journalctl -u wpa_supplicant --no-pager -n 200
+ip addr show wlan0
+hostname -I
+sudo cat /etc/wpa_supplicant/wpa_supplicant.conf
+```
 
 ---
 
@@ -791,40 +867,52 @@ scp pi@rpizero2w3:/home/pi/temperature_data.xlsx C:\Users\leves\Downloads\
 
 ## Troubleshooting
 
-### Camera not detected (Arducam / IMX219)
+### Camera not detected
 
-If your CSI camera is not detected but the Pi shows the camera driver as loaded
-and the kernel prints imx219 probe errors (for example: "Error reading reg
-0x0000: -121"), a forced device-tree overlay or disabled I2C probing is a
-common cause. The following quick actions resolved the issue in our testing:
+If your Raspberry Pi camera (official module or compatible CSI camera like Arducam) is not detected, first check:
 
-1. Back up and remove any forced IMX219 overlay lines from the config:
+1. **Physical connection**: Ensure the ribbon cable is fully inserted into the Camera CSI port (not the Display DSI port).
+2. **Check camera detection at boot**:
+
+```bash
+# List detected cameras
+rpicam-hello --list-cameras
+# or (older systems)
+v4l2-ctl --list-devices
+# Check kernel messages for camera errors
+dmesg | grep -iE 'camera|imx|ov5|arducam'
+```
+
+If the camera is not listed, it may be due to a forced or conflicting device-tree overlay. Apply these fixes:
+
+3. Back up and remove any forced overlays that conflict with auto-detection:
 
 ```bash
 sudo cp /boot/firmware/config.txt /boot/firmware/config.txt.bak
-sudo sed -i '/^camera_auto_detect=0/d; /^dtoverlay=imx219/d' /boot/firmware/config.txt
+sudo sed -i '/^camera_auto_detect=0/d; /^dtoverlay=imx219/d; /^dtoverlay=arducam/d' /boot/firmware/config.txt
 ```
 
-2. Ensure I2C probing is enabled (add if missing):
+4. Ensure I2C probing is enabled (add if missing):
 
 ```bash
-# in /boot/firmware/config.txt ensure this line exists
-dtparam=i2c_arm=on
+# Check if this line exists in /boot/firmware/config.txt
+grep "dtparam=i2c_arm=on" /boot/firmware/config.txt
+# If not found, add it:
+sudo sed -i '/^\[all\]/a dtparam=i2c_arm=on' /boot/firmware/config.txt
 ```
 
-3. Reboot and re-check logs:
+5. Reboot and verify:
 
 ```bash
 sudo reboot
-# after reboot
-dmesg | grep -iE 'imx219|camera|i2c|arducam'
-i2cdetect -l
-sudo i2cdetect -y 10
+# after reboot, check if camera is now detected
+rpicam-hello --list-cameras
+# Check I2C bus for camera device
+sudo i2cdetect -l
+sudo i2cdetect -y 1      # standard camera I2C bus
 ```
 
-If these steps make the camera visible (`rpicam-hello --list-cameras` or
-`v4l2-ctl --list-devices` show a camera), you're good to run the image test
-and logger scripts in `python files/`.
+If the camera now appears in `rpicam-hello --list-cameras`, you're good to run the image test and logger scripts in `python files/`.
 
 ### Cannot Connect via SSH
 

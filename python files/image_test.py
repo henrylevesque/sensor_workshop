@@ -9,19 +9,18 @@ import shutil
 # Camera support: Raspberry Pi Camera Module or compatible CSI camera
 # Requires libcamera (rpicam-apps/libcamera-apps) to be installed on the system
 #
-# NOTE: If the camera is not detected, a common cause is a forced device-tree
-# overlay in /boot/firmware/config.txt such as a manual `dtoverlay=imx219` or
-# `camera_auto_detect=0`. In a recent troubleshooting session we removed the
-# forced lines and left auto-detection enabled and the camera began working.
+# NOTE: If the camera is not detected:
+# 1. Check physical connection: ribbon cable fully inserted into Camera CSI port
+# 2. Check for forced overlays in /boot/firmware/config.txt:
+#    Remove lines like `camera_auto_detect=0`, `dtoverlay=imx219`, `dtoverlay=arducam`
+# 3. Ensure I2C is enabled (add if missing in /boot/firmware/config.txt):
+#    dtparam=i2c_arm=on
 #
-# Quick fix that worked on the Pi used here (run on the Pi and reboot):
+# Quick fix (run on the Pi and reboot):
 #   sudo cp /boot/firmware/config.txt /boot/firmware/config.txt.bak
-#   sudo sed -i '/^camera_auto_detect=0/d; /^dtoverlay=imx219/d' /boot/firmware/config.txt
+#   sudo sed -i '/^camera_auto_detect=0/d; /^dtoverlay=imx219/d; /^dtoverlay=arducam/d' /boot/firmware/config.txt
+#   sudo sed -i '/^\[all\]/a dtparam=i2c_arm=on' /boot/firmware/config.txt
 #   sudo reboot
-#
-# Also ensure I2C probing is enabled:
-#   # add or ensure this line exists in /boot/firmware/config.txt
-#   dtparam=i2c_arm=on
 #
 
 
@@ -31,11 +30,12 @@ def get_camera_command():
         if shutil.which(cmd) is not None:
             return cmd
 
-    raise RuntimeError(
+    raise EnvironmentError(
         "No camera capture command found. Install one of:\n"
         "  sudo apt update\n"
-        "  sudo apt install -y rpicam-apps   # Raspberry Pi OS Bookworm/newer\n"
-        "  sudo apt install -y libcamera-apps # Raspberry Pi OS Bullseye/older"
+        "  sudo apt install -y rpicam-apps   # Raspberry Pi OS Bookworm/newer (recommended)\n"
+        "  sudo apt install -y libcamera-apps # Raspberry Pi OS Bullseye/older\n"
+        "Note: Ensure the camera is physically connected and detected (see README)."
     )
 
 def test_camera():
