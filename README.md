@@ -743,7 +743,6 @@ By default, if you SSH into the Pi, start a data logger script, and then disconn
 Start the logger in the background with output redirected to a file:
 
 ```bash
-cd /home/pi
 nohup python3 temperature_data_logger.py >/home/pi/temp_log.txt 2>&1 &
 ```
 
