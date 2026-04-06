@@ -1,4 +1,4 @@
-# Environmental Data Collection Workshop using Raspberry Pi Zero
+# Data Collection Workshop using Raspberry Pi Zero
 
 **Goal**: Build Raspberry Pi Zero sensors to collect environmental data and export results in human-readable formats (Excel spreadsheets with timestamps).
 
