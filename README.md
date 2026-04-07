@@ -1,4 +1,4 @@
-# Environmental Data Collection Workshop using Raspberry Pi Zero
+# Data Collection Workshop using Raspberry Pi Zero
 
 **Goal**: Build Raspberry Pi Zero sensors to collect environmental data and export results in human-readable formats (Excel spreadsheets with timestamps).
 
@@ -73,7 +73,7 @@ nano my_temperature_logger.py
 
 Now:
 
-1. Go to the repo on GitHub: https://github.com/YourUsername/sensor_workshop
+1. Go to the repo on GitHub: [https://github.com/henrylevesque/sensor_workshop](https://github.com/henrylevesque/sensor_workshop)
 2. Open `temperature_data_logger.py` and copy all the code
 3. Back in nano (on the Pi), right-click to paste the code
 4. Press `Ctrl + O`, then `Enter` to save
