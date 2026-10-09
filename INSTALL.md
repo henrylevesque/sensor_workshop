@@ -42,5 +42,3 @@ python3 "python files/temperature_sensor.py"
 python3 "python files/pir_motion_sensor.py"
 python3 "python files/capture_images.py"
 ```
-
-If you want me to create a single `requirements.txt` that contains only pip packages (and update README accordingly), say so and I'll make that change.
