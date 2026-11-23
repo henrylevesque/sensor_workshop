@@ -131,7 +131,7 @@ Before the workshop:
 **Essential**:
 
 - [Raspberry Pi Imager](https://www.raspberrypi.com/software/) – to flash Raspberry Pi OS onto SD cards
-- [Microsoft Excel](https://www.microsoft.com/en-us/microsoft-365/excel) or [LibreOffice Calc](https://www.libreoffice.org/) – to analyze data
+- [Microsoft Excel](https://www.microsoft.com/en-us/microsoft-365/excel), [Google Sheets](https://docs.google.com/spreadsheets/create), or [LibreOffice Calc](https://www.libreoffice.org/) – to analyze data
 
 **Recommended**:
 
@@ -140,7 +140,6 @@ Before the workshop:
 
 **Optional (for data visualization)**:
 
-- [ArcGIS Online](https://ucincinnati.maps.arcgis.com/home/index.html) – for geographic mapping
 - [QGIS](https://qgis.org/download/) – open-source GIS software
 - [Raspberry Pi Connect](https://connect.raspberrypi.com/sign-in) – for remote desktop access
 
@@ -157,9 +156,9 @@ Before the workshop:
    - Choose **OS**: Raspberry Pi OS Lite (smallest option, recommended for beginners)
    - Choose **Storage**: Your SD card
    - Click **Edit Settings**:
-     - Set hostname: `rpizero2w1` (or another name)
+     - Set hostname: `rpizero2w1` (or another memorable name)
      - Enable SSH with password authentication
-     - Set WiFi SSID and password (same network as your computer)
+     - Set WiFi SSID and password (same network as the device you plan to control it with)
      - Set locale and timezone
    - Click **Write** and wait to complete
 
